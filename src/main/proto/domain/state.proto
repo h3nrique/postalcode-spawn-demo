@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package domain;
+
+option java_package = "br.com.fabricads.poc.proto";
+
+message StateState {
+  string name = 1;
+  repeated string cities = 2;
+}

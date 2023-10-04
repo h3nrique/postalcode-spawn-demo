@@ -1,0 +1,167 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>br.com.fabricads.poc</groupId>
+   <artifactId>postalcode-spawn-demo</artifactId>
+   <packaging>jar</packaging>
+   <version>1.0-SNAPSHOT</version>
+   <name>postalcode-spawn-demo</name>
+
+   <properties>
+      <maven.compiler.source>11</maven.compiler.source>
+      <maven.compiler.target>11</maven.compiler.target>
+      <project.encoding>UTF-8</project.encoding>
+   </properties>
+
+   <repositories>
+      <repository>
+         <id>jitpack.io</id>
+         <url>https://jitpack.io</url>
+      </repository>
+   </repositories>
+
+   <dependencies>
+      <!-- Framework -->
+      <dependency>
+<!--         <groupId>io.eigr.spawn</groupId>-->
+         <groupId>com.github.eigr</groupId>
+         <artifactId>spawn-java-std-sdk</artifactId>
+         <version>0.9.1</version>
+      </dependency>
+
+      <!-- Utils -->
+      <dependency>
+         <groupId>com.google.code.gson</groupId>
+         <artifactId>gson</artifactId>
+         <version>2.10.1</version>
+      </dependency>
+
+      <!-- Logs -->
+      <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-classic</artifactId>
+         <version>1.4.7</version>
+      </dependency>
+
+      <!-- Tests -->
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>4.13.2</version>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
+
+   <build>
+      <finalName>${artifactId}</finalName>
+      <extensions>
+         <extension>
+            <groupId>kr.motd.maven</groupId>
+            <artifactId>os-maven-plugin</artifactId>
+            <version>1.6.2</version>
+         </extension>
+      </extensions>
+
+      <!-- make jar runnable -->
+      <plugins>
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>3.2.0</version>
+            <executions>
+               <execution>
+                  <phase>generate-sources</phase>
+                  <goals>
+                     <goal>add-source</goal>
+                  </goals>
+                  <configuration>
+                     <sources>
+                        <source>target/generated-sources/protobuf/java</source>
+                     </sources>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <executions>
+               <execution>
+                  <goals>
+                     <goal>shade</goal>
+                  </goals>
+                  <configuration>
+                     <finalName>${artifactId}-shaded</finalName>
+                     <shadedArtifactAttached>true</shadedArtifactAttached>
+                     <transformers>
+                        <transformer implementation=
+                                             "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                           <mainClass>br.com.fabricads.poc.spawn.App</mainClass>
+                        </transformer>
+                     </transformers>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.7</version>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+               <source>17</source>
+               <target>17</target>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.xolstice.maven.plugins</groupId>
+            <artifactId>protobuf-maven-plugin</artifactId>
+            <version>0.6.1</version>
+            <configuration>
+               <protocArtifact>com.google.protobuf:protoc:3.19.2:exe:${os.detected.classifier}</protocArtifact>
+               <pluginId>grpc-java</pluginId>
+               <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.47.0:exe:${os.detected.classifier}</pluginArtifact>
+            </configuration>
+            <executions>
+               <execution>
+                  <phase>generate-sources</phase>
+                  <goals>
+                     <goal>compile</goal>
+                     <goal>compile-custom</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+   </build>
+
+   <profiles>
+      <profile>
+         <id>image-build</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>com.google.cloud.tools</groupId>
+                  <artifactId>jib-maven-plugin</artifactId>
+                  <configuration>
+                     <to>
+                        <image>postalcode-spawn-demo</image>
+                     </to>
+                  </configuration>
+                  <executions>
+                     <execution>
+                        <phase>package</phase>
+                        <goals>
+                           <goal>build</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
+</project>

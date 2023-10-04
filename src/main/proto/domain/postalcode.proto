@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package domain;
+
+import "domain/common.proto";
+
+option java_package = "br.com.fabricads.poc.proto";
+
+message PostalCodeState {
+  string code = 1;
+  PostalCodeStatus status = 2;
+  string country = 3;
+  string street = 4;
+  string state = 5;
+  string city = 6;
+}
+
+message CreateRequest {
+  string code = 1;
+  string country = 2;
+}

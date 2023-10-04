@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package domain;
+
+option java_package = "br.com.fabricads.poc.proto";
+
+message CityState {
+  string name = 1;
+  repeated string postal_codes = 2;
+  string state = 3;
+  string country = 4;
+}

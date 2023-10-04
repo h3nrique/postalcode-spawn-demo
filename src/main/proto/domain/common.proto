@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package domain;
+
+option java_package = "br.com.fabricads.poc.proto";
+
+enum PostalCodeStatus {
+  UNKNOWN = 0;
+  CREATED = 1;
+  NOT_FOUND = 2;
+  FOUND = 3;
+}
+
+message Generator {
+  string country_name = 1;
+  string begin_range_postal_code = 2;
+  string end_range_postal_code = 3;
+}
