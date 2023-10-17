@@ -26,7 +26,7 @@
 <!--         <groupId>io.eigr.spawn</groupId>-->
          <groupId>com.github.eigr</groupId>
          <artifactId>spawn-java-std-sdk</artifactId>
-         <version>0.9.1</version>
+         <version>1.0.1</version>
       </dependency>
 
       <!-- Utils -->

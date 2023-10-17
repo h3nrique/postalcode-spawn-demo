@@ -22,8 +22,7 @@ services:
       - "3307:3306"
 
   nats:
-    image: nats:0.8.0
-    entrypoint: "/gnatsd -DV"
+    image: nats:2
     networks:
       - spawn-demo
     ports:
@@ -31,13 +30,13 @@ services:
       - "4222:4222"
 
   spawn:
-    build:
-#      context: C:\git\spawn
-      context: https://github.com/eigr/spawn.git#main
-      dockerfile: ./Dockerfile-proxy
-    image: spawn/proxy-local-build:main
+#    build:
+#      context: https://github.com/eigr/spawn.git#main
+#      dockerfile: ./Dockerfile-proxy
+#    image: spawn/proxy-local-build:main
+    image: eigr/spawn-proxy:1.0.0-rc.19
     environment:
-      SPAWN_USE_INTERNAL_NATS: "true"
+      SPAWN_USE_INTERNAL_NATS: "false"
       SPAWN_PUBSUB_ADAPTER: nats
       SPAWN_PUBSUB_NATS_HOSTS: nats://nats:4222
       SPAWN_STATESTORE_KEY: 3Jnb0hZiHIzHTOih7t2cTEPEpY98Tu1wvQkPfq/XwqE=
@@ -48,8 +47,8 @@ services:
       PROXY_DATABASE_HOST: mariadb
       PROXY_HTTP_PORT: 9003
       USER_FUNCTION_PORT: 8091
-      USER_FUNCTION_HOST: "app"
-#      USER_FUNCTION_HOST: "host.docker.internal" # Used when run app in localhost instead container.
+#      USER_FUNCTION_HOST: "app"
+      USER_FUNCTION_HOST: "host.docker.internal" # Used when run app in localhost instead container.
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -60,21 +59,23 @@ services:
     ports:
       - "9003:9003"
 
-  app:
-    build:
-      context: .
-    image: fabricads/spawn-java-demo-local-build:latest
-    environment:
-      PORT: 8091
-      HOST: "app"
-      PROXY_PORT: 9003
-      PROXY_HOST: "spawn"
-      SPAWN_SYSTEM_NAME: "spawn-system"
+#  app:
+#    build:
+#      context: .
+#    image: fabricads/spawn-java-demo-local-build:latest
+#    environment:
+#      PORT: 8091
+#      HOST: "app"
+#      PROXY_PORT: 9003
+#      PROXY_HOST: "spawn"
+#      SPAWN_SYSTEM_NAME: "spawn-system"
 #    depends_on:
-#      spawn-proxy:
+#      mariadb:
 #        condition: service_healthy
-    networks:
-      - spawn-demo
+##      spawn-proxy:
+##        condition: service_healthy
+#    networks:
+#      - spawn-demo
 
 networks:
   spawn-demo:
