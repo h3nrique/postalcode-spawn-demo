@@ -1,0 +1,11 @@
+### list
+GET http://localhost:8080/postalcode
+
+### create
+POST http://localhost:8080/postalcode
+Content-Type: application/json
+
+{ "postalCode": "03694090" }
+
+### get
+GET http://localhost:8080/postalcode/03694090

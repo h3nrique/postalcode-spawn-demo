@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.util.stream.IntStream;
 
 @StatelessNamedActor(name = "postal_code_generator")
-public class PostalCodeGenerator {
+public final class PostalCodeGenerator {
 
     private static final Logger log = LoggerFactory.getLogger(PostalCodeGenerator.class);
 

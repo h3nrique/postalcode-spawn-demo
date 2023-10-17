@@ -2,24 +2,26 @@ package br.com.fabricads.poc.spawn.actors;
 
 import br.com.fabricads.poc.proto.Common;
 import br.com.fabricads.poc.proto.Postalcode;
-import br.com.fabricads.poc.spawn.util.RequestService;
+import br.com.fabricads.poc.spawn.service.PostalCodeService;
 import io.eigr.spawn.api.actors.ActorContext;
 import io.eigr.spawn.api.actors.Value;
 import io.eigr.spawn.api.actors.annotations.Action;
 import io.eigr.spawn.api.actors.annotations.stateful.StatefulUnNamedActor;
+import io.eigr.spawn.api.extensions.DependencyInjector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 @StatefulUnNamedActor(name = "postal_code", stateType = Postalcode.PostalCodeState.class)
-public class PostalCode {
+public final class PostalCode {
+
     private static final Logger log = LoggerFactory.getLogger(PostalCode.class);
 
-    private final RequestService postalCodeService;
+    private final PostalCodeService postalCodeService;
 
-    public PostalCode(RequestService postalCodeService) {
-        this.postalCodeService = postalCodeService;
+    public PostalCode(DependencyInjector dependencyInjector) {
+        this.postalCodeService = dependencyInjector.getInstance(PostalCodeService.class);
     }
 
     @Action(name = "onCreate")

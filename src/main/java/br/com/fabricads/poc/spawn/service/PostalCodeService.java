@@ -1,4 +1,4 @@
-package br.com.fabricads.poc.spawn.util;
+package br.com.fabricads.poc.spawn.service;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -11,13 +11,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public final class RequestService {
+public final class PostalCodeService {
 
-    private static final Logger log = LoggerFactory.getLogger(RequestService.class);
+    private static final Logger log = LoggerFactory.getLogger(PostalCodeService.class);
 
     private final OkHttpClient client;
 
-    public RequestService() {
+    public PostalCodeService() {
         this.client = new OkHttpClient.Builder()
                 .connectTimeout(120, TimeUnit.SECONDS)
                 .readTimeout(120, TimeUnit.SECONDS)
