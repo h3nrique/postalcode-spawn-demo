@@ -8,8 +8,8 @@
    <name>postalcode-spawn-demo</name>
 
    <properties>
-      <maven.compiler.source>11</maven.compiler.source>
-      <maven.compiler.target>11</maven.compiler.target>
+      <maven.compiler.source>17</maven.compiler.source>
+      <maven.compiler.target>17</maven.compiler.target>
       <project.encoding>UTF-8</project.encoding>
    </properties>
 
@@ -147,6 +147,9 @@
                   <groupId>com.google.cloud.tools</groupId>
                   <artifactId>jib-maven-plugin</artifactId>
                   <configuration>
+                     <from>
+                        <image>openjdk:17</image>
+                     </from>
                      <to>
                         <image>postalcode-spawn-demo</image>
                      </to>
