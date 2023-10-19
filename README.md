@@ -1,19 +1,22 @@
-# postalcode-spawn-demo
+# Postalcode Spawn Dema
 
 Java demo project using [Spawn](https://github.com/eigr/spawn) to find postal codes at [ViaCEP](https://viacep.com.br).
 
-# Start Spawn
+## Locally start `Spawn Proxy` and some dependencies
+
 ```bash
 docker network create spawn-demo
 docker-compose up mariadb nats spawn
 ```
 
-# Start Actor
+## Start Java `ActorHost` application
+
 ```bash
 docker-compose up app
 ```
 
-# Test
+## Test
+
 ```bash
 # Request PostalCode
 curl -v -H 'Content-Type: application/json' -d '{ "postalCode": "03694090" }' 'http://localhost:8080/postalcode'
