@@ -1,4 +1,4 @@
-# Postalcode Spawn Dema
+# Postalcode Spawn Demo
 
 Java demo project using [Spawn](https://github.com/eigr/spawn) to find postal codes at [ViaCEP](https://viacep.com.br).
 
