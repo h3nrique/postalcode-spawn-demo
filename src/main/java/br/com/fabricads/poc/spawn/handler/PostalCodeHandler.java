@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 public final class PostalCodeHandler implements HttpHandler {
 
     private static final Logger log = LoggerFactory.getLogger(RestServer.class);
+    private static final Pattern getPostalCodePattern = Pattern.compile("/postalcode/([0-9]{8})");
+    private static final Pattern listPostalCodePattern = Pattern.compile("/postalcode");
 
     private final Spawn spawn;
 
@@ -53,15 +55,15 @@ public final class PostalCodeHandler implements HttpHandler {
     private void getRequest(HttpExchange exchange) throws IOException {
         try (OutputStream out = exchange.getResponseBody()) {
             String path = exchange.getRequestURI().getPath();
-            Pattern getPostalCodePattern = Pattern.compile("/postalcode/([0-9]{8})");
-            Pattern listPostalCodePattern = Pattern.compile("/postalcode");
             Matcher getPostalCodeMatcher = getPostalCodePattern.matcher(path);
             Matcher listPostalCodeMatcher = listPostalCodePattern.matcher(path);
-            if(getPostalCodeMatcher.matches()) {
+            if (getPostalCodeMatcher.matches()) {
                 String postalCode = getPostalCodeMatcher.group(1);
-                ActorRef actorRef = spawn.createActorRef(ActorIdentity.of(spawn.getSystem(), postalCode, "postal_code"));
-                Optional<Postalcode.PostalCodeState> actorState = actorRef.invoke("get", Postalcode.PostalCodeState.class);
-                if(actorState.isPresent()) {
+                ActorRef actorRef = spawn
+                        .createActorRef(ActorIdentity.of(spawn.getSystem(), postalCode, "postal_code"));
+                Optional<Postalcode.PostalCodeState> actorState = actorRef.invoke("get",
+                        Postalcode.PostalCodeState.class);
+                if (actorState.isPresent()) {
                     byte[] bytes = actorState.get().toString().getBytes();
                     exchange.getResponseHeaders().set("Content-Type", "application/json");
                     exchange.sendResponseHeaders(200, (long) bytes.length);
@@ -72,7 +74,7 @@ public final class PostalCodeHandler implements HttpHandler {
                     exchange.sendResponseHeaders(404, bytes.length);
                     out.write(bytes);
                 }
-            } else if(listPostalCodeMatcher.matches()) {
+            } else if (listPostalCodeMatcher.matches()) {
                 byte[] bytes = "{\"error\": \"Not Implemented Yet\"}".getBytes();
                 exchange.getResponseHeaders().set("Content-Type", "application/json");
                 exchange.sendResponseHeaders(200, bytes.length);
@@ -92,12 +94,14 @@ public final class PostalCodeHandler implements HttpHandler {
                     .lines()
                     .collect(Collectors.joining("\n"));
             log.info("requestBody :: {}", requestBody);
-            Type type = new TypeToken<Map<String, String>>() { }.getType();
+            Type type = new TypeToken<Map<String, String>>() {
+            }.getType();
             Map<String, String> map = new Gson().fromJson(requestBody, type);
             Pattern postalCodePattern = Pattern.compile("^[0-9]{8}$");
             Matcher postalCodeMatcher = postalCodePattern.matcher(map.getOrDefault("postalCode", ""));
-            if(postalCodeMatcher.matches()) {
-                ActorRef actorRef = spawn.createActorRef(ActorIdentity.of(spawn.getSystem(), postalCodeMatcher.group(), "postal_code"));
+            if (postalCodeMatcher.matches()) {
+                ActorRef actorRef = spawn
+                        .createActorRef(ActorIdentity.of(spawn.getSystem(), postalCodeMatcher.group(), "postal_code"));
                 actorRef.invokeAsync("onCreate", Postalcode.CreateRequest.newBuilder()
                         .setCode(postalCodeMatcher.group())
                         .setCountry("Brasil")
