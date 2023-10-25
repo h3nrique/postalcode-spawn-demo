@@ -51,7 +51,7 @@ public final class PostalCodeGenerator {
                         context.getSpawnSystem()
                                 .createActorRef(actorIdentity)
                                 .invokeAsync("onCreate", Postalcode.CreateRequest.newBuilder()
-                                        .setCode(postalCode)
+                                        .setPostalCode(postalCode)
                                         .setCountry(msg.getCountryName())
                                         .build()
                                 );

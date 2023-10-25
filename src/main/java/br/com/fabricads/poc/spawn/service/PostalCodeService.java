@@ -28,7 +28,7 @@ public final class PostalCodeService {
                 .build();
     }
 
-    public Map<String, String> findPostalCode(String postalCode) {
+    public Map<String, String> find(String postalCode) {
         log.debug("Looking for Brasil postalcode '{}'.", postalCode);
         Request request = new Request.Builder()
                 // Uso massivo poderá bloquear seu acesso por tempo indeterminado.

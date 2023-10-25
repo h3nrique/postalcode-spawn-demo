@@ -19,7 +19,7 @@ docker-compose up app
 
 ```bash
 # Request PostalCode
-curl -v -H 'Content-Type: application/json' -d '{ "postalCode": "03694090" }' 'http://localhost:8080/postalcode'
+curl -v -H 'Content-Type: application/json' -d '{ "postalCode": "03694090", "country": "Brasil" }' 'http://localhost:8080/postalcode'
 
 # Get PostalCode info
 curl -v 'http://localhost:8080/postalcode/03694090'

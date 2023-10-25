@@ -29,14 +29,14 @@ public final class PostalCode {
         log.debug("Received invocation. Message: '{}'. Context: '{}'.", msg, context);
 
         Postalcode.PostalCodeState.Builder builder = Postalcode.PostalCodeState.newBuilder();
-        Map<String, String> postalCode = postalCodeService.findPostalCode(msg.getCode());
+        Map<String, String> postalCode = postalCodeService.find(msg.getPostalCode());
         if(!postalCode.isEmpty()) {
             if(context.getState().isPresent()) {
                 log.trace("State is present and value is '{}'.", context.getState().get());
             } else {
                 log.trace("State not present.");
             }
-            builder.setCode(msg.getCode())
+            builder.setCode(msg.getPostalCode())
                     .setCity(postalCode.get("localidade"))
                     .setState(postalCode.get("uf"))
                     .setStreet(postalCode.get("logradouro"))

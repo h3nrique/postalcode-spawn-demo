@@ -16,6 +16,6 @@ message PostalCodeState {
 }
 
 message CreateRequest {
-  string code = 1;
+  string postalCode = 1;
   string country = 2;
 }
