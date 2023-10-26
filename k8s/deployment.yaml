@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: postalcode-spawn-demo
+  name: postalcode-spawn-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postalcode-spawn-demo
+  template:
+    metadata:
+      labels:
+        app: postalcode-spawn-demo
+    spec:
+      containers:
+        - image: postalcode-spawn-demo:latest
+          imagePullPolicy: Always
+          name: postalcode-spawn-demo
+          ports:
+            - containerPort: 8080
+              protocol: TCP
