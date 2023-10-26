@@ -30,7 +30,7 @@ public final class App {
         log.debug("USER_FUNCTION_PORT :: {}", userFunctionPort);
         log.debug("SPAWN_PROXY_HOST   :: {}", spawnProxyHost);
         log.debug("SPAWN_PROXY_PORT   :: {}", spawnProxyPort);
-        log.debug("SPAWN_SYSTEM_NAME   :: {}", spawnSystemName);
+        log.debug("SPAWN_SYSTEM_NAME  :: {}", spawnSystemName);
 
         TransportOpts opts = TransportOpts.builder()
                 .host(userFunctionHost)
