@@ -20,16 +20,16 @@ public final class App {
         String port = System.getenv("PORT") != null ? System.getenv("PORT") : "8080";
         String actorHost = System.getenv("ACTOR_HOST") != null ? System.getenv("ACTOR_HOST") : "localhost";
         String actorPort = System.getenv("ACTOR_PORT") != null ? System.getenv("ACTOR_PORT") : "8091";
-        String proxyHost = System.getenv("PROXY_HOST") != null ? System.getenv("PROXY_HOST") : "localhost";
-        String proxyPort = System.getenv("PROXY_PORT") != null ? System.getenv("PROXY_PORT") : "9003";
+        String proxyHost = System.getenv("SPAWN_PROXY_HOST") != null ? System.getenv("SPAWN_PROXY_HOST") : "localhost";
+        String proxyPort = System.getenv("SPAWN_PROXY_PORT") != null ? System.getenv("SPAWN_PROXY_PORT") : "9001";
         String spawnSystemName = System.getenv("SPAWN_SYSTEM_NAME") != null ? System.getenv("SPAWN_SYSTEM_NAME") : "spawn-system";
 
-        log.debug("HOST       :: {}", host);
-        log.debug("PORT       :: {}", port);
-        log.debug("ACTOR_HOST :: {}", actorHost);
-        log.debug("ACTOR_PORT :: {}", actorPort);
-        log.debug("PROXY_HOST :: {}", proxyHost);
-        log.debug("PROXY_PORT :: {}", proxyPort);
+        log.debug("HOST             :: {}", host);
+        log.debug("PORT             :: {}", port);
+        log.debug("ACTOR_HOST       :: {}", actorHost);
+        log.debug("ACTOR_PORT       :: {}", actorPort);
+        log.debug("SPAWN_PROXY_HOST :: {}", proxyHost);
+        log.debug("SPAWN_PROXY_PORT :: {}", proxyPort);
 
         TransportOpts opts = TransportOpts.builder()
                 .host(actorHost)

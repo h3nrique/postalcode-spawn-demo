@@ -6,11 +6,12 @@ metadata:
   name: postalcode-spawn-demo
   annotations:
     spawn-eigr.io/actor-system: spawn-demo
+    spawn-eigr.io/app-port: "8091"
 spec:
   selector:
     app: postalcode-spawn-demo
   host:
-    image: postalcode-spawn-demo:latest
+    image: image-registry.openshift-image-registry.svc:5000/spawn/postalcode-spawn-demo
     ports:
       - name: "http"
         containerPort: 8080
