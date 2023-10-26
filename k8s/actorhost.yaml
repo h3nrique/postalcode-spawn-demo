@@ -13,16 +13,8 @@ spec:
   host:
     image: image-registry.openshift-image-registry.svc:5000/spawn/postalcode-spawn-demo
     env:
-      - name: SPAWN_PROXY_HOST
-        valueFrom:
-          fieldRef:
-            apiVersion: v1
-            fieldPath: status.podIP
-      - name: USER_FUNCTION_HOST
-        valueFrom:
-          fieldRef:
-            apiVersion: v1
-            fieldPath: status.podIP
+      - name: STARTUP_DELAY_SECONDS
+        value: 30
       - name: SPAWN_SYSTEM_NAME
         value: spawn-demo
     ports:

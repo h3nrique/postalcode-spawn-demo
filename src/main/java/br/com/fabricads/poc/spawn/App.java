@@ -16,6 +16,7 @@ public final class App {
 
     public static void main(String[] args) throws Exception {
 
+        String startupDelaySeconds = System.getenv("STARTUP_DELAY_SECONDS") != null ? System.getenv("STARTUP_DELAY_SECONDS") : "10";
         String host = System.getenv("HOST") != null ? System.getenv("HOST") : "0.0.0.0";
         String port = System.getenv("PORT") != null ? System.getenv("PORT") : "8080";
         String userFunctionHost = System.getenv("USER_FUNCTION_HOST") != null ? System.getenv("USER_FUNCTION_HOST") : "localhost";
@@ -32,6 +33,11 @@ public final class App {
         log.debug("SPAWN_PROXY_PORT   :: {}", spawnProxyPort);
         log.debug("SPAWN_SYSTEM_NAME  :: {}", spawnSystemName);
 
+        try {
+                Thread.sleep(Long.valueOf(startupDelaySeconds) * 1000);
+        } catch (Exception err) {
+
+        }
         TransportOpts opts = TransportOpts.builder()
                 .host(userFunctionHost)
                 .port(Integer.parseInt(userFunctionPort))
