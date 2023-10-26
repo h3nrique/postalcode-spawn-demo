@@ -12,6 +12,12 @@ spec:
     app: postalcode-spawn-demo
   host:
     image: image-registry.openshift-image-registry.svc:5000/spawn/postalcode-spawn-demo
+    env:
+      - name: SPAWN_PROXY_HOST
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: status.podIP
     ports:
       - name: "http"
         containerPort: 8080

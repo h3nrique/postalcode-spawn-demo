@@ -18,24 +18,24 @@ public final class App {
 
         String host = System.getenv("HOST") != null ? System.getenv("HOST") : "0.0.0.0";
         String port = System.getenv("PORT") != null ? System.getenv("PORT") : "8080";
-        String actorHost = System.getenv("ACTOR_HOST") != null ? System.getenv("ACTOR_HOST") : "localhost";
-        String actorPort = System.getenv("ACTOR_PORT") != null ? System.getenv("ACTOR_PORT") : "8091";
-        String proxyHost = System.getenv("SPAWN_PROXY_HOST") != null ? System.getenv("SPAWN_PROXY_HOST") : "localhost";
-        String proxyPort = System.getenv("SPAWN_PROXY_PORT") != null ? System.getenv("SPAWN_PROXY_PORT") : "9001";
+        String userFunctionHost = System.getenv("USER_FUNCTION_HOST") != null ? System.getenv("USER_FUNCTION_HOST") : "localhost";
+        String userFunctionPort = System.getenv("USER_FUNCTION_PORT") != null ? System.getenv("USER_FUNCTION_PORT") : "8091";
+        String spawnProxyHost = System.getenv("SPAWN_PROXY_HOST") != null ? System.getenv("SPAWN_PROXY_HOST") : "localhost";
+        String spawnProxyPort = System.getenv("SPAWN_PROXY_PORT") != null ? System.getenv("SPAWN_PROXY_PORT") : "9001";
         String spawnSystemName = System.getenv("SPAWN_SYSTEM_NAME") != null ? System.getenv("SPAWN_SYSTEM_NAME") : "spawn-system";
 
-        log.debug("HOST             :: {}", host);
-        log.debug("PORT             :: {}", port);
-        log.debug("ACTOR_HOST       :: {}", actorHost);
-        log.debug("ACTOR_PORT       :: {}", actorPort);
-        log.debug("SPAWN_PROXY_HOST :: {}", proxyHost);
-        log.debug("SPAWN_PROXY_PORT :: {}", proxyPort);
+        log.debug("HOST               :: {}", host);
+        log.debug("PORT               :: {}", port);
+        log.debug("USER_FUNCTION_HOST :: {}", userFunctionHost);
+        log.debug("USER_FUNCTION_PORT :: {}", userFunctionPort);
+        log.debug("SPAWN_PROXY_HOST   :: {}", spawnProxyHost);
+        log.debug("SPAWN_PROXY_PORT   :: {}", spawnProxyPort);
 
         TransportOpts opts = TransportOpts.builder()
-                .host(actorHost)
-                .port(Integer.parseInt(actorPort))
-                .proxyHost(proxyHost)
-                .proxyPort(Integer.parseInt(proxyPort))
+                .host(userFunctionHost)
+                .port(Integer.parseInt(userFunctionPort))
+                .proxyHost(spawnProxyHost)
+                .proxyPort(Integer.parseInt(spawnProxyPort))
                 .build();
 
         PostalCodeService postalCodeService = new PostalCodeService();
