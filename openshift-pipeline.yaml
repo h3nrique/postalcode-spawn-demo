@@ -1,0 +1,238 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postalcode-spawn-demo-shared
+  annotations:
+    pv.kubernetes.io/bind-completed: 'yes'
+    pv.kubernetes.io/bound-by-controller: 'yes'
+    volume.beta.kubernetes.io/storage-provisioner: nfs-storage
+    volume.kubernetes.io/storage-provisioner: nfs-storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: managed-storage
+  volumeMode: Filesystem
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: lookup-policy-imagestream
+spec:
+  params:
+    - description: Image stream
+      name: image_stream
+      type: string
+    - description: Local policy
+      name: local_policy
+      type: string
+  steps:
+    - args:
+        - >-
+          echo Updating ImageStream $(inputs.params.image_stream)
+          
+
+          oc patch is/$(inputs.params.image_stream) -p '{"spec":
+          {"lookupPolicy":{"local":$(inputs.params.local_policy)}}}'
+          
+
+          echo -----------------------------------
+      command:
+        - /bin/bash
+        - '-c'
+      image: 'image-registry.openshift-image-registry.svc:5000/openshift/cli:latest'
+      name: patch
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: apply-manifests
+spec:
+  params:
+    - default: k8s
+      description: The directory in source that contains yaml manifests
+      name: manifest_dir
+      type: string
+  steps:
+    - args:
+        - >-
+          echo Applying manifests in $(inputs.params.manifest_dir) directory
+          
+
+          oc apply -f $(inputs.params.manifest_dir)
+          
+
+          echo -----------------------------------
+      command:
+        - /bin/bash
+        - '-c'
+      image: 'image-registry.openshift-image-registry.svc:5000/openshift/cli:latest'
+      name: apply
+      workingDir: /workspace/source
+  workspaces:
+    - name: source
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: update-deployment
+spec:
+  params:
+    - description: The name of the deployment patch the image
+      name: deployment
+      type: string
+    - description: Location of image to be patched with
+      name: IMAGE
+      type: string
+  steps:
+    - args:
+        - >-
+          oc patch deployment $(inputs.params.deployment)
+          --patch='{"spec":{"template":{"spec":{
+            "containers":[{
+              "name": "$(inputs.params.deployment)",
+              "image":"$(inputs.params.IMAGE)"
+            }]
+          }}}}'
+
+
+          # issue: https://issues.redhat.com/browse/SRVKP-2387
+
+          # images are deployed with tag. on rebuild of the image tags are not
+          updated, hence redeploy is not happening
+
+          # as a workaround update a label in template, which triggers redeploy
+          pods
+
+          # target label: "spec.template.metadata.labels.patched_at"
+
+          # NOTE: this workaround works only if the pod spec has
+          imagePullPolicy: Always
+
+          patched_at_timestamp=`date +%s`
+
+          oc patch deployment $(inputs.params.deployment)
+          --patch='{"spec":{"template":{"metadata":{
+            "labels":{
+              "patched_at": '\"$patched_at_timestamp\"'
+            }
+          }}}}'
+      command:
+        - /bin/bash
+        - '-c'
+      image: 'image-registry.openshift-image-registry.svc:5000/openshift/cli:latest'
+      name: patch
+---
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: postalcode-spawn-demo
+spec:
+  params:
+    - default: postalcode-spawn-demo
+      description: name of the deployment to be patched
+      name: deployment-name
+      type: string
+    - default: 'https://github.com/h3nrique/postalcode-spawn-demo'
+      description: url of the git repo for the code of deployment
+      name: git-url
+      type: string
+    - default: master
+      description: revision to be used from repo of the code for deployment
+      name: git-revision
+      type: string
+    - default: >-
+        image-registry.openshift-image-registry.svc:5000/spawn/postalcode-spawn-demo
+      description: image to be build from the code
+      name: IMAGE
+      type: string
+  tasks:
+    - name: fetch-repository
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: subdirectory
+          value: ''
+        - name: deleteExisting
+          value: 'true'
+        - name: revision
+          value: $(params.git-revision)
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+    - name: build-image
+      params:
+        - name: IMAGE
+          value: $(params.IMAGE)
+        - name: BUILDER_IMAGE
+          value: quay.io/buildah/stable:latest
+      runAfter:
+        - fetch-repository
+      taskRef:
+        kind: ClusterTask
+        name: buildah
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+    - name: update-imagestream
+      params:
+        - name: image_stream
+          value: $(params.deployment-name)
+        - name: local_policy
+          value: 'true'
+      runAfter:
+        - build-image
+      taskRef:
+        kind: Task
+        name: lookup-policy-imagestream
+    - name: apply-manifests
+      runAfter:
+        - update-imagestream
+      taskRef:
+        kind: Task
+        name: apply-manifests
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+    - name: update-deployment
+      params:
+        - name: deployment
+          value: $(params.deployment-name)
+        - name: IMAGE
+          value: $(params.IMAGE)
+      runAfter:
+        - apply-manifests
+      taskRef:
+        kind: Task
+        name: update-deployment
+  workspaces:
+    - name: shared-workspace
+---
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: postalcode-spawn-demo-1
+  labels:
+    tekton.dev/pipeline: postalcode-spawn-demo
+spec:
+  params:
+    - name: deployment-name
+      value: postalcode-spawn-demo
+    - name: git-url
+      value: 'https://github.com/h3nrique/postalcode-spawn-demo'
+    - name: git-revision
+      value: master
+    - name: IMAGE
+      value: >-
+        image-registry.openshift-image-registry.svc:5000/spawn/postalcode-spawn-demo
+  pipelineRef:
+    name: postalcode-spawn-demo
+  workspaces:
+    - name: shared-workspace
+      persistentVolumeClaim:
+        claimName: postalcode-spawn-demo-shared
