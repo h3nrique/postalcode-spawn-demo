@@ -124,7 +124,7 @@ spec:
         - fetch-repository
       taskRef:
         kind: ClusterTask
-        name: buildah
+        name: jib-maven
       workspaces:
         - name: source
           workspace: shared-workspace
