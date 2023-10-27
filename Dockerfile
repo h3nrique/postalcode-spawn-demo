@@ -10,4 +10,3 @@ LABEL authors="Paulo Henrique Alves <paulo.alves@fabricads.com.br>"
 EXPOSE 8091 8080
 COPY --from=build  /usr/src/target/postalcode-spawn-demo-shaded.jar  /opt/
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/opt/postalcode-spawn-demo-shaded.jar"]
-
