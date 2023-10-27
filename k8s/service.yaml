@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats
+  labels:
+    app: nats
+spec:
+  ports:
+    - name: "tcp-4222"
+      protocol: TCP
+      port: 4222
+      targetPort: "tcp-4222"
+    - name: "tcp-8222"
+      protocol: TCP
+      port: 8222
+      targetPort: "tcp-8222"
+    - name: "tcp-6222"
+      protocol: TCP
+      port: 6222
+      targetPort: "tcp-6222"
+  selector:
+    app: nats

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nats
+  labels:
+    app: nats
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 600
+  selector:
+    matchLabels:
+      app: nats
+  template:
+    metadata:
+      labels:
+        app: nats
+    spec:
+      containers:
+        - name: nats
+          imagePullPolicy: Always
+          image: docker.io/library/nats:2
+          env:
+            - name: TZ
+              value: 'America/Sao_Paulo'
+          ports:
+            - name: "tcp-4222"
+              containerPort: 4222
+              protocol: TCP
+            - name: "tcp-6222"
+              containerPort: 6222
+              protocol: TCP
+            - name: "tcp-8222"
+              containerPort: 8222
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 100m
+              memory: 80Mi

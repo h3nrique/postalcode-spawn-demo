@@ -1,20 +1,23 @@
 apiVersion: spawn-eigr.io/v1
 kind: ActorHost
 metadata:
-#  labels:
-#    app: postalcode-spawn-demo
+  labels:
+    app: postalcode-spawn-demo
   name: postalcode-spawn-demo
   annotations:
     spawn-eigr.io/actor-system: spawn-demo
     spawn-eigr.io/app-port: "8091"
+    spawn-eigr.io/sidecar-pubsub-nats-hosts: "nats://nats.spawn.svc.cluster.local:4222"
 spec:
-  selector:
-    app: postalcode-spawn-demo
+#  selector:
+#    app: postalcode-spawn-demo
   host:
     image: image-registry.openshift-image-registry.svc:5000/spawn/postalcode-spawn-demo
     env:
+      - name: TZ
+        value: 'America/Sao_Paulo'
       - name: STARTUP_DELAY_SECONDS
-        value: 30
+        value: "30"
       - name: SPAWN_SYSTEM_NAME
         value: spawn-demo
     ports:

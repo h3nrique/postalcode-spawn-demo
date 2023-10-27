@@ -34,6 +34,7 @@ public final class App {
         log.debug("SPAWN_SYSTEM_NAME  :: {}", spawnSystemName);
 
         try {
+                log.info("Waiting [{}] seconds to start...", startupDelaySeconds);
                 Thread.sleep(Long.valueOf(startupDelaySeconds) * 1000);
         } catch (Exception err) {
 
@@ -59,18 +60,18 @@ public final class App {
 
         spawnSystem.start();
 
-        RestServer.create(host, Integer.parseInt(port))
-                .withRoute("/postalcode", new PostalCodeHandler(spawnSystem))
-                .start();
+        // RestServer.create(host, Integer.parseInt(port))
+        //         .withRoute("/postalcode", new PostalCodeHandler(spawnSystem))
+        //         .start();
 
-        ActorRef postalCodeGenerator = spawnSystem.createActorRef( ActorIdentity.of(spawnSystemName, "postal_code_generator"));
+        // ActorRef postalCodeGenerator = spawnSystem.createActorRef( ActorIdentity.of(spawnSystemName, "postal_code_generator"));
 
-        Common.Generator msg = Common.Generator.newBuilder()
-                .setCountryName("Brasil")
-                .setBeginRangePostalCode("60192000")
-                .setEndRangePostalCode("60192200")
-                .build();
+        // Common.Generator msg = Common.Generator.newBuilder()
+        //         .setCountryName("Brasil")
+        //         .setBeginRangePostalCode("60192000")
+        //         .setEndRangePostalCode("60192200")
+        //         .build();
 
-        postalCodeGenerator.invokeAsync("generatePostalCodes", msg);
+        // postalCodeGenerator.invokeAsync("generatePostalCodes", msg);
     }
 }
