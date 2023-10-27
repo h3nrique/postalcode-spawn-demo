@@ -73,5 +73,6 @@ public final class App {
         //         .build();
 
         // postalCodeGenerator.invokeAsync("generatePostalCodes", msg);
+        log.info("Actor running and ready to connection at ports [{}] and [{}]", userFunctionPort, port);
     }
 }

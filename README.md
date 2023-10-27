@@ -50,7 +50,7 @@ END
 oc create -f actorsystem.yaml -n spawn
 oc create -f openshift-pipeline.yaml -n spawn
 oc create role actorhost-pipeline --verb='*' --resource='actorhosts,actorsystems' -n spawn
-oc policy add-role-to-user actorhost-pipeline system:serviceaccount:spawn:pipeline
+oc create rolebinding actorhost-pipeline --role=actorhost-pipeline --serviceaccount=spawn:pipeline -n spawn
 # If you want to expose actor service with route command
 oc create route edge postalcode --service=postalcode-spawn-demo --port=8080
 ```
