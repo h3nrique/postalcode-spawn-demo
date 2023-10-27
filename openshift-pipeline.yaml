@@ -114,12 +114,12 @@ spec:
       workspaces:
         - name: output
           workspace: shared-workspace
-    - name: build-image
+    - name: jib-maven
       params:
         - name: IMAGE
           value: $(params.IMAGE)
-        - name: BUILDER_IMAGE
-          value: quay.io/buildah/stable:latest
+        - name: MAVEN_IMAGE
+          value: docker.io/library/maven:3-openjdk-17
       runAfter:
         - fetch-repository
       taskRef:
@@ -135,7 +135,7 @@ spec:
         - name: local_policy
           value: 'true'
       runAfter:
-        - build-image
+        - jib-maven
       taskRef:
         kind: Task
         name: lookup-policy-imagestream
