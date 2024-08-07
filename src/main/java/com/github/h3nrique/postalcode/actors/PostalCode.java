@@ -17,7 +17,6 @@ import java.util.Map;
 
 import static io.eigr.spawn.api.actors.behaviors.ActorBehavior.*;
 
-
 public final class PostalCode implements StatefulActor<Postalcode.PostalCodeState> {
 
     private static final Logger log = LoggerFactory.getLogger(PostalCode.class);

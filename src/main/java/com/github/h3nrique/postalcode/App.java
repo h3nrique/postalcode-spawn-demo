@@ -2,6 +2,7 @@ package com.github.h3nrique.postalcode;
 
 import com.github.h3nrique.postalcode.actors.PostalCode;
 import com.github.h3nrique.postalcode.actors.PostalCodeGenerator;
+import com.github.h3nrique.postalcode.handler.PostalCodeHandler;
 import com.github.h3nrique.postalcode.service.PostalCodeService;
 import io.eigr.spawn.api.*;
 
@@ -38,6 +39,10 @@ public final class App {
                 .build();
 
         spawnSystem.start();
+
+        RestServer.create(cfg.host, Integer.parseInt(cfg.port))
+                .withRoute("/postalcode", new PostalCodeHandler(spawnSystem))
+                .start();
 
         log.info("Actor running and ready to connection at ports [{}] and [{}]", cfg.userFunctionPort, cfg.port);
     }

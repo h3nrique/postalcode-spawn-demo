@@ -2,17 +2,11 @@
 
 Java demo project using [Spawn](https://github.com/eigr/spawn) to find postal codes at [ViaCEP](https://viacep.com.br).
 
-## Locally start `Spawn Proxy` and some dependencies
+## Locally start `Spawn Proxy`, some dependencies and `ActorHost` application
 
 ```bash
 docker network create spawn-demo
-docker-compose up mariadb nats spawn
-```
-
-## Start Java `ActorHost` application
-
-```bash
-docker-compose up app
+docker-compose up mariadb nats spawn app
 ```
 
 ## Test
