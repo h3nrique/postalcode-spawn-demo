@@ -1,6 +1,6 @@
 package com.github.h3nrique.postalcode.service;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,14 +10,14 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PostalCodeServiceTest {
+class PostalCodeServiceTest {
 
     private static final Logger log = LoggerFactory.getLogger(PostalCodeServiceTest.class);
-    private PostalCodeService postalCodeService;
+    private static PostalCodeService postalCodeService;
 
-    @Before
-    public void setUp() {
-        this.postalCodeService = new PostalCodeService();
+    @BeforeAll
+    public static void setUp() {
+        postalCodeService = new PostalCodeService();
     }
 
     @Test
