@@ -1,4 +1,4 @@
-package br.com.fabricads.poc.spawn;
+package com.github.h3nrique.postalcode;
 
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;

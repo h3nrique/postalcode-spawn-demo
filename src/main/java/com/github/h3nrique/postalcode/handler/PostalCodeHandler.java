@@ -1,7 +1,7 @@
-package br.com.fabricads.poc.spawn.handler;
+package com.github.h3nrique.postalcode.handler;
 
-import br.com.fabricads.poc.proto.Postalcode;
-import br.com.fabricads.poc.spawn.RestServer;
+import com.github.h3nrique.postalcode.proto.Postalcode;
+import com.github.h3nrique.postalcode.RestServer;
 import com.google.protobuf.util.JsonFormat;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -62,7 +62,7 @@ public final class PostalCodeHandler implements HttpHandler {
             if (getPostalCodeMatcher.matches()) {
                 String postalCode = getPostalCodeMatcher.group(1);
                 ActorRef actorRef = spawn
-                        .createActorRef(ActorIdentity.of(spawn.getSystem(), postalCode, "postal_code"));
+                        .createActorRef(ActorIdentity.of(spawn.getSystem(), postalCode, "PostalCode"));
                 Optional<Postalcode.PostalCodeState> actorState = actorRef.invoke("get",
                         Postalcode.PostalCodeState.class);
                 if (actorState.isPresent()) {
@@ -104,8 +104,8 @@ public final class PostalCodeHandler implements HttpHandler {
             Matcher postalCodeMatcher = postalCodePattern.matcher(postalCodeRequestBuilder.getPostalCode());
             if (postalCodeMatcher.matches()) {
                 ActorRef actorRef = spawn
-                        .createActorRef(ActorIdentity.of(spawn.getSystem(), postalCodeMatcher.group(), "postal_code"));
-                actorRef.invokeAsync("onCreate", postalCodeRequestBuilder.build());
+                        .createActorRef(ActorIdentity.of(spawn.getSystem(), postalCodeMatcher.group(), "PostalCode"));
+                actorRef.invokeAsync("OnCreate", postalCodeRequestBuilder.build());
                 defaultHeaders.forEach((key, value) -> exchange.getResponseHeaders().set(key, value));
                 exchange.sendResponseHeaders(201, 0);
             } else {

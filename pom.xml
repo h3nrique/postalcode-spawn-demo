@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
-   <groupId>br.com.fabricads.poc</groupId>
+   <groupId>com.github.h3nrique</groupId>
    <artifactId>postalcode-spawn-demo</artifactId>
    <packaging>jar</packaging>
    <version>1.0-SNAPSHOT</version>
@@ -11,6 +11,13 @@
       <maven.compiler.source>17</maven.compiler.source>
       <maven.compiler.target>17</maven.compiler.target>
       <project.encoding>UTF-8</project.encoding>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+      <!-- Lib versions -->
+      <spawn.sdk.version>v1.3.1</spawn.sdk.version>
+      <protobuf.version>4.27.2</protobuf.version>
+      <testcontainers.version>1.20.1</testcontainers.version>
+      <gson.version>2.11.0</gson.version>
    </properties>
 
    <repositories>
@@ -20,41 +27,58 @@
       </repository>
    </repositories>
 
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers-bom</artifactId>
+            <version>${testcontainers.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+
    <dependencies>
       <!-- Framework -->
       <dependency>
 <!--         <groupId>io.eigr.spawn</groupId>-->
          <groupId>com.github.eigr</groupId>
          <artifactId>spawn-java-std-sdk</artifactId>
-         <version>1.0.1</version>
+         <version>${spawn.sdk.version}</version>
       </dependency>
 
       <!-- Utils -->
       <dependency>
          <groupId>com.google.code.gson</groupId>
          <artifactId>gson</artifactId>
-         <version>2.10.1</version>
+         <version>${gson.version}</version>
       </dependency>
       <dependency>
          <groupId>com.google.protobuf</groupId>
          <artifactId>protobuf-java-util</artifactId>
-         <version>3.24.4</version>
+         <version>${protobuf.version}</version>
       </dependency>
 
       <!-- Logs -->
       <dependency>
          <groupId>ch.qos.logback</groupId>
          <artifactId>logback-classic</artifactId>
-         <version>1.4.11</version>
+         <version>1.4.14</version>
       </dependency>
 
       <!-- Tests -->
       <dependency>
          <groupId>org.junit.jupiter</groupId>
          <artifactId>junit-jupiter-api</artifactId>
-         <version>5.10.0</version>
+         <version>5.10.2</version>
          <scope>test</scope>
-     </dependency>     
+     </dependency>
+      <dependency>
+         <groupId>org.testcontainers</groupId>
+         <artifactId>testcontainers</artifactId>
+         <scope>test</scope>
+      </dependency>
    </dependencies>
 
    <build>
@@ -72,7 +96,7 @@
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>build-helper-maven-plugin</artifactId>
-            <version>3.4.0</version>
+            <version>3.5.0</version>
             <executions>
                <execution>
                   <phase>generate-sources</phase>
@@ -102,7 +126,7 @@
                      <transformers>
                         <transformer implementation=
                                              "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                           <mainClass>br.com.fabricads.poc.spawn.App</mainClass>
+                           <mainClass>com.github.h3nrique.postalcode.App</mainClass>
                         </transformer>
                      </transformers>
                   </configuration>
@@ -119,8 +143,8 @@
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.11.0</version>
             <configuration>
-               <source>17</source>
-               <target>17</target>
+               <source>${maven.compiler.source}</source>
+               <target>${maven.compiler.target}</target>
             </configuration>
          </plugin>
          <plugin>
@@ -128,16 +152,13 @@
             <artifactId>protobuf-maven-plugin</artifactId>
             <version>0.6.1</version>
             <configuration>
-               <protocArtifact>com.google.protobuf:protoc:3.19.2:exe:${os.detected.classifier}</protocArtifact>
-               <pluginId>grpc-java</pluginId>
-               <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.47.0:exe:${os.detected.classifier}</pluginArtifact>
+               <protocArtifact>com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}</protocArtifact>
             </configuration>
             <executions>
                <execution>
                   <phase>generate-sources</phase>
                   <goals>
                      <goal>compile</goal>
-                     <goal>compile-custom</goal>
                   </goals>
                </execution>
             </executions>

@@ -1,4 +1,4 @@
-package br.com.fabricads.poc.spawn.service;
+package com.github.h3nrique.postalcode.service;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -44,6 +44,7 @@ public final class PostalCodeService {
                 Map<String, String> map = new Gson().fromJson(responseJson, type);
                 log.debug("postalcode response '{}'.", map);
                 if(!map.containsKey("erro")) {
+                    if(!map.containsKey("pais")) map.put("pais", "Brasil");
                     return map;
                 }
             }

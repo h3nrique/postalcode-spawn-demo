@@ -1,26 +1,36 @@
-package br.com.fabricads.poc.spawn.actors;
+package com.github.h3nrique.postalcode.actors;
 
-import br.com.fabricads.poc.proto.Common;
-import br.com.fabricads.poc.proto.Postalcode;
+import com.github.h3nrique.postalcode.proto.Common;
+import com.github.h3nrique.postalcode.proto.Postalcode;
 import io.eigr.spawn.api.ActorIdentity;
 import io.eigr.spawn.api.actors.ActorContext;
+import io.eigr.spawn.api.actors.StatelessActor;
 import io.eigr.spawn.api.actors.Value;
-import io.eigr.spawn.api.actors.annotations.Action;
-import io.eigr.spawn.api.actors.annotations.stateless.StatelessNamedActor;
+import io.eigr.spawn.api.actors.behaviors.ActorBehavior;
+import io.eigr.spawn.api.actors.behaviors.BehaviorCtx;
+import io.eigr.spawn.api.actors.behaviors.NamedActorBehavior;
 import io.eigr.spawn.api.exceptions.ActorCreationException;
 import io.eigr.spawn.api.exceptions.ActorInvocationException;
+import io.eigr.spawn.internal.ActionBindings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.stream.IntStream;
 
-@StatelessNamedActor(name = "postal_code_generator")
-public final class PostalCodeGenerator {
+import static io.eigr.spawn.api.actors.behaviors.ActorBehavior.*;
+
+public final class PostalCodeGenerator implements StatelessActor {
 
     private static final Logger log = LoggerFactory.getLogger(PostalCodeGenerator.class);
 
-    @Action(name = "generatePostalCodes")
-    public Value generate(Common.Generator msg, ActorContext<?> context) {
+    @Override
+    public ActorBehavior configure(BehaviorCtx context) {
+        return new NamedActorBehavior(
+                action("Generate", ActionBindings.of(Common.Generator.class, this::generate))
+        );
+    }
+
+    public Value generate(ActorContext<?> context, Common.Generator msg) {
         log.debug("Received invocation. Message: '{}'. Context: '{}'.", msg, context);
         final String spawnSystemName = System.getenv("SPAWN_SYSTEM_NAME") != null ? System.getenv("SPAWN_SYSTEM_NAME") : "spawn-system";
 
@@ -50,9 +60,8 @@ public final class PostalCodeGenerator {
                         ActorIdentity actorIdentity = ActorIdentity.of(spawnSystemName, postalCode, "postal_code");
                         context.getSpawnSystem()
                                 .createActorRef(actorIdentity)
-                                .invokeAsync("onCreate", Postalcode.CreateRequest.newBuilder()
+                                .invokeAsync("OnCreate", Postalcode.CreateRequest.newBuilder()
                                         .setPostalCode(postalCode)
-                                        .setCountry(msg.getCountryName())
                                         .build()
                                 );
                     } catch (ActorCreationException | ActorInvocationException err) {

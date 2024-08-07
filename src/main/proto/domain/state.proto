@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package domain;
 
-option java_package = "br.com.fabricads.poc.proto";
+option java_package = "com.github.h3nrique.postalcode.proto";
 
 message StateState {
   string name = 1;
