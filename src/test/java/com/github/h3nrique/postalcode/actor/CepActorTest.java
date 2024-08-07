@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class TJActorTest extends AbstractContainerBaseTest {
+public class CepActorTest extends AbstractContainerBaseTest {
 
-    private static final Logger log = LoggerFactory.getLogger(TJActorTest.class);
+    private static final Logger log = LoggerFactory.getLogger(CepActorTest.class);
 
     @Test
     public void findCep() throws SpawnException {
