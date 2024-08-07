@@ -14,15 +14,11 @@ services:
       MYSQL_PASSWORD: admin
     volumes:
       - mariadb:/var/lib/mysql
-    networks:
-      - spawn-demo
     ports:
       - "3307:3306"
 
   nats:
     image: nats:2
-    networks:
-      - spawn-demo
     ports:
       - "8222:8222"
       - "4222:4222"
@@ -52,8 +48,6 @@ services:
     depends_on:
       mariadb:
         condition: service_healthy
-    networks:
-      - spawn-demo
     ports:
       - "9001:9001"
 
@@ -72,14 +66,8 @@ services:
         condition: service_healthy
 #      spawn-proxy:
 #        condition: service_healthy
-    networks:
-      - spawn-demo
     ports:
       - "8080:8080"
-
-networks:
-  spawn-demo:
-    external: true
 
 volumes:
   mariadb:
