@@ -16,8 +16,6 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
-import java.util.concurrent.Executors;
-
 abstract class AbstractContainerBaseTest {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractContainerBaseTest.class);

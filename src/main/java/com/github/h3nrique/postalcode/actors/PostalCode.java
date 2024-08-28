@@ -50,7 +50,7 @@ public final class PostalCode implements StatefulActor<Postalcode.PostalCodeStat
                     .setStatus(Common.PostalCodeStatus.FOUND)
                     .build();
             return Value.at()
-                    .state(builder.build())
+                    .state(state)
                     .noReply();
         }
         return Value.at()
