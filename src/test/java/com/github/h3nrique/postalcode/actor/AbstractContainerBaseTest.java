@@ -18,9 +18,9 @@ import org.testcontainers.utility.DockerImageName;
 
 abstract class AbstractContainerBaseTest {
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractContainerBaseTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractContainerBaseTest.class);
 
-    private static final String spawnProxyImageName = "eigr/spawn-proxy:1.4.2-rc.2";
+    private static final String SPAWN_PROXY_IMAGE_NAME = "eigr/spawn-proxy:1.4.2-rc.2";
     static final GenericContainer<?> SPAWN_CONTAINER;
     static final Spawn spawnSystem;
     static final App.Config cfg;
@@ -28,7 +28,7 @@ abstract class AbstractContainerBaseTest {
     static {
         Testcontainers.exposeHostPorts(8091);
 
-        SPAWN_CONTAINER = new GenericContainer<>(DockerImageName.parse(spawnProxyImageName))
+        SPAWN_CONTAINER = new GenericContainer<>(DockerImageName.parse(SPAWN_PROXY_IMAGE_NAME))
                 .waitingFor(new LogMessageWaitStrategy()
                         .withRegEx(".*Proxy Application started successfully.*"))
                 .withEnv("TZ", "America/Sao_Paulo")
@@ -70,6 +70,6 @@ abstract class AbstractContainerBaseTest {
         } catch (SpawnException e) {
             throw new RuntimeException(e);
         }
-        log.info("Spawn system started");
+        LOG.info("Spawn system started");
     }
 }

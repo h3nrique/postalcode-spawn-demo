@@ -37,9 +37,10 @@ public final class PostalCodeService {
                 .build();
         Call call = client.newCall(request);
         try (Response response = call.execute()) {
-            assert response.body() != null;
+            ResponseBody body = response.body();
+            assert body != null;
             if(response.isSuccessful()) {
-                String responseJson = response.body().string();
+                String responseJson = body.string();
                 Type type = new TypeToken<Map<String, String>>() { }.getType();
                 Map<String, String> map = new Gson().fromJson(responseJson, type);
                 log.debug("postalcode response '{}'.", map);
