@@ -3,13 +3,13 @@ package com.github.h3nrique.postalcode.actors;
 import com.github.h3nrique.postalcode.proto.Common;
 import com.github.h3nrique.postalcode.proto.Postalcode;
 import com.github.h3nrique.postalcode.service.PostalCodeService;
+import io.eigr.spawn.api.actors.ActionBindings;
 import io.eigr.spawn.api.actors.ActorContext;
 import io.eigr.spawn.api.actors.StatefulActor;
 import io.eigr.spawn.api.actors.Value;
 import io.eigr.spawn.api.actors.behaviors.ActorBehavior;
 import io.eigr.spawn.api.actors.behaviors.BehaviorCtx;
 import io.eigr.spawn.api.actors.behaviors.NamedActorBehavior;
-import io.eigr.spawn.internal.ActionBindings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

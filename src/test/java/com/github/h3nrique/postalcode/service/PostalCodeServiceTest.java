@@ -22,7 +22,7 @@ class PostalCodeServiceTest {
 
     @Test
     public void findCepOk() {
-        Map<String, String> cepResult = postalCodeService.find("03694090");
+        Map<String, String> cepResult = postalCodeService.find("03568000");
         assertFalse(cepResult.isEmpty());
         log.debug("cepResult :: [{}]", cepResult);
     }

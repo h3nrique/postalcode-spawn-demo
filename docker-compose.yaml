@@ -28,7 +28,7 @@ services:
 #      context: https://github.com/eigr/spawn.git#main
 #      dockerfile: ./Dockerfile-proxy
 #    image: spawn/proxy:main-localbuild
-    image: eigr/spawn-proxy:1.4.1-rc.1
+    image: eigr/spawn-proxy:1.4.2-rc.2
     environment:
       SPAWN_USE_INTERNAL_NATS: "false"
       SPAWN_PUBSUB_ADAPTER: nats

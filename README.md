@@ -2,20 +2,27 @@
 
 Java demo project using [Spawn](https://github.com/eigr/spawn) to find postal codes at [ViaCEP](https://viacep.com.br).
 
-## Start environment
+## Test
+Before running the Maven command, ensure that a container environment (Docker/Podman) is running.
+
+```bash
+mvn test
+```
+
+## Start local environment
 
 ```bash
 docker compose up
 ```
 
-## Test
+## Test local environment
 
 ```bash
 # Request PostalCode
-curl -v -H 'Content-Type: application/json' -d '{ "postalCode": "03694090" }' 'http://localhost:8080/postalcode'
+curl -v -H 'Content-Type: application/json' -d '{ "postalCode": "03568000" }' 'http://localhost:8080/postalcode'
 
 # Get PostalCode info
-curl -v 'http://localhost:8080/postalcode/03694090'
+curl -v 'http://localhost:8080/postalcode/03568000'
 ```
 
 ## To deploy on Openshift with Openshift Pipeline (Tekton)

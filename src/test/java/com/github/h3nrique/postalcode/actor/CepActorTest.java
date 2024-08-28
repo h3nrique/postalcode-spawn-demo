@@ -17,7 +17,7 @@ public class CepActorTest extends AbstractContainerBaseTest {
 
     @Test
     public void findCep() throws SpawnException {
-        String cep = "03694090";
+        String cep = "03568000";
         Postalcode.CreateRequest createRequest = Postalcode.CreateRequest.newBuilder()
                 .setPostalCode(cep)
                 .build();

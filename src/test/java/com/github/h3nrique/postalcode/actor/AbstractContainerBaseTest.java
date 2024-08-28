@@ -22,7 +22,7 @@ abstract class AbstractContainerBaseTest {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractContainerBaseTest.class);
 
-    private static final String spawnProxyImageName = "eigr/spawn-proxy:1.4.1-rc.1";
+    private static final String spawnProxyImageName = "eigr/spawn-proxy:1.4.2-rc.2";
     static final GenericContainer<?> SPAWN_CONTAINER;
     static final Spawn spawnSystem;
     static final App.Config cfg;
