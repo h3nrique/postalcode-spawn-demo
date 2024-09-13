@@ -23,13 +23,18 @@ message CreateRequest {
 
 service PostalCode {
   rpc OnCreate(CreateRequest) returns (PostalCodeState);
+  rpc Get(google.protobuf.Empty) returns (PostalCodeState) {
+    option (google.api.http) = {
+      get: "/v1/postalcode/{postalCode}"
+    };
+  }
 }
 
 service PostalCodeGenerator {
   rpc Generate(Generator) returns (google.protobuf.Empty);
   rpc Create(CreateRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/v1/postalcode",
+      post: "/v1/postalcode/{postalCode}",
       body: "*"
     };
   }
