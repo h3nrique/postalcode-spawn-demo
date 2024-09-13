@@ -1,4 +1,4 @@
-FROM docker.io/library/maven:3-openjdk-17 as build
+FROM docker.io/library/maven:3-openjdk-17 AS build
 LABEL authors="Paulo Henrique Alves <paulohenriqueas13@gmail.com>"
 RUN mkdir -p /usr/src
 WORKDIR /usr/src

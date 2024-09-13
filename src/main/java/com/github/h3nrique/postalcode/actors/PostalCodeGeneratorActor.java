@@ -3,6 +3,8 @@ package com.github.h3nrique.postalcode.actors;
 import com.github.h3nrique.postalcode.proto.Common;
 import com.github.h3nrique.postalcode.proto.Postalcode;
 import io.eigr.spawn.api.ActorIdentity;
+import io.eigr.spawn.api.ActorRef;
+import io.eigr.spawn.api.Spawn;
 import io.eigr.spawn.api.actors.ActionBindings;
 import io.eigr.spawn.api.actors.ActorContext;
 import io.eigr.spawn.api.actors.StatelessActor;
@@ -10,6 +12,7 @@ import io.eigr.spawn.api.actors.Value;
 import io.eigr.spawn.api.actors.behaviors.ActorBehavior;
 import io.eigr.spawn.api.actors.behaviors.BehaviorCtx;
 import io.eigr.spawn.api.actors.behaviors.NamedActorBehavior;
+import io.eigr.spawn.api.actors.workflows.Forward;
 import io.eigr.spawn.api.exceptions.ActorCreationException;
 import io.eigr.spawn.api.exceptions.ActorInvocationException;
 import org.slf4j.Logger;
@@ -19,15 +22,33 @@ import java.util.stream.IntStream;
 
 import static io.eigr.spawn.api.actors.behaviors.ActorBehavior.*;
 
-public final class PostalCodeGenerator implements StatelessActor {
+public final class PostalCodeGeneratorActor implements StatelessActor {
 
-    private static final Logger log = LoggerFactory.getLogger(PostalCodeGenerator.class);
+    private static final Logger log = LoggerFactory.getLogger(PostalCodeGeneratorActor.class);
 
     @Override
     public ActorBehavior configure(BehaviorCtx context) {
         return new NamedActorBehavior(
-                action("Generate", ActionBindings.of(Common.Generator.class, this::generate))
+                name("PostalCodeGenerator"),
+                action("Generate", ActionBindings.of(Common.Generator.class, this::generate)),
+                action("Create", ActionBindings.of(Postalcode.CreateRequest.class, this::create))
         );
+    }
+
+    public Value create(ActorContext<?> context, Postalcode.CreateRequest msg) {
+        log.debug("Received invocation. Message: '{}'. Context: '{}'.", msg, context);
+        try {
+            Spawn spawn = context.getSpawnSystem();
+            ActorRef actorRef = spawn
+                    .createActorRef(ActorIdentity.of(spawn.getSystem(), msg.getPostalCode(), "PostalCode", true));
+
+            return Value.at()
+                    .flow(Forward.to(actorRef, "Get"))
+                    .reply();
+
+        } catch (ActorCreationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Value generate(ActorContext<?> context, Common.Generator msg) {

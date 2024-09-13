@@ -9,3 +9,12 @@ Content-Type: application/json
 
 ### get
 GET http://localhost:8080/postalcode/03568000
+
+### create by proxy
+POST http://localhost:9001/v1/postalcode
+Content-Type: application/json
+
+{ "postalCode": "03568000" }
+
+### get by proxy
+GET http://localhost:9001/v1/postalcode/03568000

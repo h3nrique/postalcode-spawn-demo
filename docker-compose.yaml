@@ -16,19 +16,38 @@ services:
       - mariadb:/var/lib/mysql
     ports:
       - "3307:3306"
+    networks:
+      - spawn
 
   nats:
     image: nats:2
     ports:
       - "8222:8222"
       - "4222:4222"
+    networks:
+      - spawn
+
+  jaeger:
+    image: jaegertracing/all-in-one:1
+    environment:
+      COLLECTOR_ZIPKIN_HOST_PORT: 9411
+    ports:
+      - "16686:16686"
+    networks:
+      - spawn
 
   spawn:
-#    build:
-#      context: https://github.com/eigr/spawn.git#main
-#      dockerfile: ./Dockerfile-proxy
-#    image: spawn/proxy:main-localbuild
-    image: eigr/spawn-proxy:1.4.2-rc.2
+    build:
+      context: https://github.com/h3nrique/spawn.git#main
+      dockerfile: ./Dockerfile-proxy
+    image: spawn/proxy:localbuild
+#    image: ghcr.io/eigr/spawn-proxy:1.4.3
+    healthcheck:
+      test: [ "CMD", "nc", "-vz", "-w1", "127.0.0.1", "9001" ]
+      start_period: 5s
+      interval: 1s
+      timeout: 1s
+      retries: 30
     environment:
       SPAWN_USE_INTERNAL_NATS: "false"
       SPAWN_PUBSUB_ADAPTER: nats
@@ -41,8 +60,12 @@ services:
       PROXY_DATABASE_HOST: mariadb
       PROXY_HTTP_PORT: 9001
       USER_FUNCTION_PORT: 8091
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://jaeger:4317
+      OTEL_EXPORTER_OTLP_TRACES_PROTOCOL: grpc
+      OTEL_EXPORTER_OTLP_TRACES_COMPRESSION: gzip
       USER_FUNCTION_HOST: "app"
 #      USER_FUNCTION_HOST: "host.docker.internal" # Used when run app in localhost instead container.
+#      SPAWN_PROXY_LOGGER_LEVEL: DEBUG
 #    extra_hosts:
 #      - "host.docker.internal:host-gateway" # Used when run app in localhost instead container.
     depends_on:
@@ -50,24 +73,31 @@ services:
         condition: service_healthy
     ports:
       - "9001:9001"
+    networks:
+      - spawn
 
   app:
     build:
       context: .
     image: postalcode-spawn-java-demo:localbuild
     environment:
-      ACTOR_PORT: 8091
-      ACTOR_HOST: "app"
+      USER_FUNCTION_PORT: 8091
+      USER_FUNCTION_HOST: "app"
       SPAWN_PROXY_PORT: 9001
       SPAWN_PROXY_HOST: "spawn"
       SPAWN_SYSTEM_NAME: "spawn-system"
     depends_on:
       mariadb:
         condition: service_healthy
-#      spawn-proxy:
-#        condition: service_healthy
+      spawn:
+        condition: service_healthy
     ports:
       - "8080:8080"
+    networks:
+      - spawn
 
 volumes:
   mariadb:
+
+networks:
+  spawn:

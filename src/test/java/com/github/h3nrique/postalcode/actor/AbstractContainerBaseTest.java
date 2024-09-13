@@ -1,8 +1,8 @@
 package com.github.h3nrique.postalcode.actor;
 
 import com.github.h3nrique.postalcode.App;
-import com.github.h3nrique.postalcode.actors.PostalCode;
-import com.github.h3nrique.postalcode.actors.PostalCodeGenerator;
+import com.github.h3nrique.postalcode.actors.PostalCodeActor;
+import com.github.h3nrique.postalcode.actors.PostalCodeGeneratorActor;
 import com.github.h3nrique.postalcode.service.PostalCodeService;
 import io.eigr.spawn.api.Spawn;
 import io.eigr.spawn.api.TransportOpts;
@@ -57,8 +57,8 @@ abstract class AbstractContainerBaseTest {
         try {
             spawnSystem = new Spawn.SpawnSystem()
                     .create(cfg.spawnSystemName(), dependencyInjector)
-                    .withActor(PostalCode.class)
-                    .withActor(PostalCodeGenerator.class)
+                    .withActor(PostalCodeActor.class)
+                    .withActor(PostalCodeGeneratorActor.class)
                     .withTerminationGracePeriodSeconds(10)
                     .withTransportOptions(TransportOpts.builder()
                             .host(SPAWN_CONTAINER.getHost())

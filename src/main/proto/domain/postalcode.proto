@@ -1,8 +1,9 @@
 syntax = "proto3";
 
-package domain;
+package com.github.h3nrique.postalcode.proto;
 
 import "domain/common.proto";
+import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
 option java_package = "com.github.h3nrique.postalcode.proto";
@@ -26,4 +27,10 @@ service PostalCode {
 
 service PostalCodeGenerator {
   rpc Generate(Generator) returns (google.protobuf.Empty);
+  rpc Create(CreateRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/postalcode",
+      body: "*"
+    };
+  }
 }

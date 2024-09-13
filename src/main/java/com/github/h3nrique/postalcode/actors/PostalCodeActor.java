@@ -17,9 +17,9 @@ import java.util.Map;
 
 import static io.eigr.spawn.api.actors.behaviors.ActorBehavior.*;
 
-public final class PostalCode implements StatefulActor<Postalcode.PostalCodeState> {
+public final class PostalCodeActor implements StatefulActor<Postalcode.PostalCodeState> {
 
-    private static final Logger log = LoggerFactory.getLogger(PostalCode.class);
+    private static final Logger log = LoggerFactory.getLogger(PostalCodeActor.class);
 
     private PostalCodeService postalCodeService;
 
@@ -27,6 +27,7 @@ public final class PostalCode implements StatefulActor<Postalcode.PostalCodeStat
     public ActorBehavior configure(BehaviorCtx context) {
         this.postalCodeService = context.getInjector().getInstance(PostalCodeService.class);
         return new NamedActorBehavior(
+                name("PostalCode"),
                 action("OnCreate", ActionBindings.of(Postalcode.CreateRequest.class, this::onCreatePostalCode))
         );
     }
