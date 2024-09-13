@@ -1,6 +1,6 @@
 services:
   mariadb:
-    image: mariadb
+    image: mariadb:latest
     healthcheck:
       test: ["CMD", "/usr/local/bin/healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
       start_period: 20s
@@ -27,12 +27,36 @@ services:
     networks:
       - spawn
 
-  jaeger:
-    image: jaegertracing/all-in-one:1
+  grafana:
+    image: grafana/grafana:latest
     environment:
-      COLLECTOR_ZIPKIN_HOST_PORT: 9411
+      GF_AUTH_ANONYMOUS_ENABLED: true
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_AUTH_DISABLE_LOGIN_FORM: true
+    depends_on:
+      tempo:
+        condition: service_healthy
+    volumes:
+      - ./grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ./grafana.ini:/etc/grafana/grafana.ini
     ports:
-      - "16686:16686"
+      - "3000:3000"
+    networks:
+      - spawn
+
+  tempo:
+    image: grafana/tempo:latest
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    healthcheck:
+      test: [ "CMD", "nc", "-vz", "-w1", "127.0.0.1", "4318" ]
+      start_period: 5s
+      interval: 1s
+      timeout: 1s
+      retries: 30
+    volumes:
+      - ./tempo.yaml:/etc/tempo.yaml
+    ports:
+      - "8000:8000"
     networks:
       - spawn
 
@@ -60,7 +84,7 @@ services:
       PROXY_DATABASE_HOST: mariadb
       PROXY_HTTP_PORT: 9001
       USER_FUNCTION_PORT: 8091
-      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://jaeger:4317
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://tempo:4318
       OTEL_EXPORTER_OTLP_TRACES_PROTOCOL: grpc
       OTEL_EXPORTER_OTLP_TRACES_COMPRESSION: gzip
       USER_FUNCTION_HOST: "app"
@@ -70,6 +94,8 @@ services:
 #      - "host.docker.internal:host-gateway" # Used when run app in localhost instead container.
     depends_on:
       mariadb:
+        condition: service_healthy
+      tempo:
         condition: service_healthy
     ports:
       - "9001:9001"
