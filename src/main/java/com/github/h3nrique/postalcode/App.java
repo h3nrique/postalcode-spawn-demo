@@ -1,7 +1,7 @@
 package com.github.h3nrique.postalcode;
 
 import com.github.h3nrique.postalcode.actors.PostalCodeActor;
-import com.github.h3nrique.postalcode.actors.PostalCodeGeneratorActor;
+import com.github.h3nrique.postalcode.actors.PostalCodeRouterActor;
 import com.github.h3nrique.postalcode.handler.PostalCodeHandler;
 import com.github.h3nrique.postalcode.service.PostalCodeService;
 import io.eigr.spawn.api.*;
@@ -27,7 +27,7 @@ public final class App {
 
         Spawn spawnSystem = new Spawn.SpawnSystem()
                 .create(cfg.spawnSystemName, dependencyInjector)
-                .withActor(PostalCodeGeneratorActor.class)
+                .withActor(PostalCodeRouterActor.class)
                 .withActor(PostalCodeActor.class)
                 .withTransportOptions(TransportOpts.builder()
                         .host(cfg.userFunctionHost)

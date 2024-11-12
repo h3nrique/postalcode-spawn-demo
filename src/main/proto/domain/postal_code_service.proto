@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package com.github.h3nrique.postalcode.proto;
+
+import "domain/create_request.proto";
+import "domain/postal_code_state.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option java_package = "com.github.h3nrique.postalcode.proto";
+option java_outer_classname = "PostalCodeProto";
+
+service PostalCode {
+  rpc OnCreate(CreateRequest) returns (PostalCodeState);
+  rpc Get(google.protobuf.Empty) returns (PostalCodeState) {
+    option (google.api.http) = {
+      get: "/v1/postalcode/{postal_code}"
+    };
+  }
+}

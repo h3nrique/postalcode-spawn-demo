@@ -1,6 +1,6 @@
 package com.github.h3nrique.postalcode.actor;
 
-import com.github.h3nrique.postalcode.proto.Postalcode;
+import com.github.h3nrique.postalcode.proto.*;
 import io.eigr.functions.protocol.Protocol;
 import io.eigr.spawn.api.ActorIdentity;
 import io.eigr.spawn.api.ActorRef;
@@ -18,13 +18,13 @@ public class CepActorTest extends AbstractContainerBaseTest {
     @Test
     public void findCep() throws SpawnException {
         String cep = "03568000";
-        Postalcode.CreateRequest createRequest = Postalcode.CreateRequest.newBuilder()
+        CreateRequestProto.CreateRequest createRequest = CreateRequestProto.CreateRequest.newBuilder()
                 .setPostalCode(cep)
                 .build();
         ActorIdentity actorIdentity = ActorIdentity.of(cfg.spawnSystemName(), cep, "PostalCode", true);
         ActorRef actorRef = spawnSystem.createActorRef(actorIdentity);
         actorRef.invoke("OnCreate", createRequest, Protocol.Noop.class);
-        actorRef.invoke("Get", Postalcode.PostalCodeState.class)
+        actorRef.invoke("Get", PostalCodeStateProto.PostalCodeState.class)
                 .ifPresent(resp -> {
                     assertNotNull(resp);
                     log.debug("PostalCode Get :: [{}]", resp);

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package com.github.h3nrique.postalcode.proto;
+
+import "domain/common.proto";
+import "google/type/postal_address.proto";
+
+option java_package = "com.github.h3nrique.postalcode.proto";
+option java_outer_classname = "PostalCodeStateProto";
+
+message PostalCodeState {
+  PostalCodeStatus status = 1;
+  google.type.PostalAddress postal_address = 2;
+}

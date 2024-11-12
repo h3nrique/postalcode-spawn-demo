@@ -1,20 +1,20 @@
 ### list
 GET http://localhost:8080/postalcode
 
-### create
+### find postal code
 POST http://localhost:8080/postalcode
 Content-Type: application/json
 
 { "postalCode": "03568000" }
 
-### get
+### load
 GET http://localhost:8080/postalcode/03568000
 
-### create by proxy
+### find postal code using proxy
 POST http://localhost:9001/v1/postalcode/03568000
 Content-Type: application/json
 
 { "postalCode": "03568000" }
 
-### get by proxy
+### get using proxy
 GET http://localhost:9001/v1/postalcode/03568000

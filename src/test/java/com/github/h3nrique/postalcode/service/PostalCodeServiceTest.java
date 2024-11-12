@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,14 +23,14 @@ class PostalCodeServiceTest {
 
     @Test
     public void findCepOk() {
-        Map<String, String> cepResult = postalCodeService.find("03568000");
-        assertFalse(cepResult.isEmpty());
-        log.debug("cepResult :: [{}]", cepResult);
+        Optional<Map<String, String>> cepResult = postalCodeService.find("03568000");
+        assertTrue(cepResult.isPresent());
+        log.debug("cepResult :: [{}]", cepResult.get());
     }
 
     @Test
     public void findCepNok() {
-        Map<String, String> cepResult = postalCodeService.find("000000000");
-        assertTrue(cepResult.isEmpty());
+        Optional<Map<String, String>> cepResult = postalCodeService.find("000000000");
+        assertFalse(cepResult.isPresent());
     }
 }

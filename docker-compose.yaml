@@ -61,11 +61,11 @@ services:
       - spawn
 
   spawn:
-    build:
-      context: https://github.com/h3nrique/spawn.git#main
-      dockerfile: ./Dockerfile-proxy
-    image: spawn/proxy:localbuild
-#    image: ghcr.io/eigr/spawn-proxy:1.4.3
+#    build:
+#      context: https://github.com/h3nrique/spawn.git#main
+#      dockerfile: ./Dockerfile-proxy
+#    image: spawn/proxy:localbuild
+    image: ghcr.io/eigr/spawn-proxy:1.4.3
     healthcheck:
       test: [ "CMD", "nc", "-vz", "-w1", "127.0.0.1", "9001" ]
       start_period: 5s

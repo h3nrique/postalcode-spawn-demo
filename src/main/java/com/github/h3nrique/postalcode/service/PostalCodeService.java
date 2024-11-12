@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public final class PostalCodeService {
@@ -28,7 +29,7 @@ public final class PostalCodeService {
                 .build();
     }
 
-    public Map<String, String> find(String postalCode) {
+    public Optional<Map<String, String>> find(String postalCode) {
         log.debug("Looking for Brasil postalcode '{}'.", postalCode);
         Request request = new Request.Builder()
                 // Uso massivo poderá bloquear seu acesso por tempo indeterminado.
@@ -46,13 +47,13 @@ public final class PostalCodeService {
                 log.debug("postalcode response '{}'.", map);
                 if(!map.containsKey("erro")) {
                     if(!map.containsKey("pais")) map.put("pais", "Brasil");
-                    return map;
+                    return Optional.of(map);
                 }
             }
         } catch (Exception err) {
             log.error("Error while load postalcode.", err);
         }
         log.warn("postalcode '{}' not found.", postalCode);
-        return new HashMap<>();
+        return Optional.empty();
     }
 }

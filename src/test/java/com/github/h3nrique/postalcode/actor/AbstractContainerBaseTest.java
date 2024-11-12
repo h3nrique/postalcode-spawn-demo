@@ -2,7 +2,7 @@ package com.github.h3nrique.postalcode.actor;
 
 import com.github.h3nrique.postalcode.App;
 import com.github.h3nrique.postalcode.actors.PostalCodeActor;
-import com.github.h3nrique.postalcode.actors.PostalCodeGeneratorActor;
+import com.github.h3nrique.postalcode.actors.PostalCodeRouterActor;
 import com.github.h3nrique.postalcode.service.PostalCodeService;
 import io.eigr.spawn.api.Spawn;
 import io.eigr.spawn.api.TransportOpts;
@@ -20,7 +20,7 @@ abstract class AbstractContainerBaseTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractContainerBaseTest.class);
 
-    private static final String SPAWN_PROXY_IMAGE_NAME = "eigr/spawn-proxy:1.4.2-rc.2";
+    private static final String SPAWN_PROXY_IMAGE_NAME = "ghcr.io/eigr/spawn-proxy:1.4.3";
     static final GenericContainer<?> SPAWN_CONTAINER;
     static final Spawn spawnSystem;
     static final App.Config cfg;
@@ -58,7 +58,7 @@ abstract class AbstractContainerBaseTest {
             spawnSystem = new Spawn.SpawnSystem()
                     .create(cfg.spawnSystemName(), dependencyInjector)
                     .withActor(PostalCodeActor.class)
-                    .withActor(PostalCodeGeneratorActor.class)
+                    .withActor(PostalCodeRouterActor.class)
                     .withTerminationGracePeriodSeconds(10)
                     .withTransportOptions(TransportOpts.builder()
                             .host(SPAWN_CONTAINER.getHost())

@@ -1,8 +1,8 @@
 package com.github.h3nrique.postalcode.actors;
 
-import com.github.h3nrique.postalcode.proto.Common;
-import com.github.h3nrique.postalcode.proto.Postalcode;
+import com.github.h3nrique.postalcode.proto.*;
 import com.github.h3nrique.postalcode.service.PostalCodeService;
+import com.google.type.PostalAddress;
 import io.eigr.spawn.api.actors.ActionBindings;
 import io.eigr.spawn.api.actors.ActorContext;
 import io.eigr.spawn.api.actors.StatefulActor;
@@ -14,10 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static io.eigr.spawn.api.actors.behaviors.ActorBehavior.*;
 
-public final class PostalCodeActor implements StatefulActor<Postalcode.PostalCodeState> {
+public final class PostalCodeActor implements StatefulActor<PostalCodeStateProto.PostalCodeState> {
 
     private static final Logger log = LoggerFactory.getLogger(PostalCodeActor.class);
 
@@ -28,36 +29,38 @@ public final class PostalCodeActor implements StatefulActor<Postalcode.PostalCod
         this.postalCodeService = context.getInjector().getInstance(PostalCodeService.class);
         return new NamedActorBehavior(
                 name("PostalCode"),
-                action("OnCreate", ActionBindings.of(Postalcode.CreateRequest.class, this::onCreatePostalCode))
+                action("OnCreate", ActionBindings.of(CreateRequestProto.CreateRequest.class, this::onCreate))
         );
     }
 
-    public Value onCreatePostalCode(ActorContext<Postalcode.PostalCodeState> context, Postalcode.CreateRequest msg) {
+    public Value onCreate(ActorContext<PostalCodeStateProto.PostalCodeState> context, CreateRequestProto.CreateRequest msg) {
         log.debug("Received invocation. Message: '{}'. Context: '{}'.", msg, context);
 
-        Postalcode.PostalCodeState.Builder builder = Postalcode.PostalCodeState.newBuilder();
-        Map<String, String> postalCode = postalCodeService.find(msg.getPostalCode());
-        if(!postalCode.isEmpty()) {
-            if(context.getState().isPresent()) {
-                log.trace("State is present and value is '{}'.", context.getState().get());
-            } else {
-                log.trace("State not present.");
-            }
-            Postalcode.PostalCodeState state = builder.setCode(msg.getPostalCode())
-                    .setCity(postalCode.get("localidade"))
-                    .setState(postalCode.get("uf"))
-                    .setStreet(postalCode.get("logradouro"))
-                    .setCountry(postalCode.get("pais"))
-                    .setStatus(Common.PostalCodeStatus.FOUND)
-                    .build();
-            return Value.at()
-                    .state(state)
-                    .noReply();
-        }
-        return Value.at()
-                .state(builder
-                        .setStatus(Common.PostalCodeStatus.UNKNOWN)
-                        .build())
-                .noReply();
+        PostalCodeStateProto.PostalCodeState.Builder builder = PostalCodeStateProto.PostalCodeState.newBuilder();
+        return postalCodeService.find(msg.getPostalCode())
+                .map(postalCode -> {
+                    if(context.getState().isPresent()) {
+                        log.trace("State is present and value is '{}'.", context.getState().get());
+                    } else {
+                        log.trace("State not present.");
+                    }
+                    PostalCodeStateProto.PostalCodeState state = builder.setPostalAddress(PostalAddress.newBuilder()
+                                    .addAddressLines(postalCode.get("logradouro"))
+                                    .addAddressLines(postalCode.get("complemento"))
+                                    .addAddressLines(postalCode.get("bairro"))
+                                    .addAddressLines(postalCode.get("localidade"))
+                                    .addAddressLines(postalCode.get("uf"))
+                                    .build())
+                            .setStatus(PostalCodeStatusProto.PostalCodeStatus.FOUND)
+                            .build();
+                    return Value.at()
+                            .state(state)
+                            .noReply();
+                })
+                .orElse(Value.at()
+                        .state(builder
+                                .setStatus(PostalCodeStatusProto.PostalCodeStatus.NOT_FOUND)
+                                .build())
+                        .noReply());
     }
 }
