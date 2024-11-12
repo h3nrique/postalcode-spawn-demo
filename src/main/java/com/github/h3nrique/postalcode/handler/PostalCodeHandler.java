@@ -63,8 +63,8 @@ public final class PostalCodeHandler implements HttpHandler {
                 String postalCode = getPostalCodeMatcher.group(1);
                 ActorRef actorRef = spawn
                         .createActorRef(ActorIdentity.of(spawn.getSystem(), postalCode, "PostalCode"));
-                Optional<PostalCodeStateProto.PostalCodeState> actorState = actorRef.invoke("get",
-                        PostalCodeStateProto.PostalCodeState.class);
+                Optional<PostalCodeState> actorState = actorRef.invoke("get",
+                        PostalCodeState.class);
                 if (actorState.isPresent()) {
                     byte[] bytes = JsonFormat.printer().print(actorState.get()).getBytes();
                     defaultHeaders.forEach((key, value) -> exchange.getResponseHeaders().set(key, value));
@@ -99,7 +99,7 @@ public final class PostalCodeHandler implements HttpHandler {
                     .lines()
                     .collect(Collectors.joining("\n"));
             log.debug("requestBody :: {}", requestBody);
-            CreateRequestProto.CreateRequest.Builder postalCodeRequestBuilder = CreateRequestProto.CreateRequest.newBuilder();
+            CreateRequest.Builder postalCodeRequestBuilder = CreateRequest.newBuilder();
             JsonFormat.parser().ignoringUnknownFields().merge(requestBody, postalCodeRequestBuilder);
             Matcher postalCodeMatcher = postalCodePattern.matcher(postalCodeRequestBuilder.getPostalCode());
             if (postalCodeMatcher.matches()) {

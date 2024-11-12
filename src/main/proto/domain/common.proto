@@ -4,6 +4,7 @@ package com.github.h3nrique.postalcode.proto;
 
 option java_package = "com.github.h3nrique.postalcode.proto";
 option java_outer_classname = "PostalCodeStatusProto";
+option java_multiple_files = true;
 
 enum PostalCodeStatus {
   UNKNOWN = 0;

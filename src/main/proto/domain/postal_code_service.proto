@@ -9,6 +9,7 @@ import "google/protobuf/empty.proto";
 
 option java_package = "com.github.h3nrique.postalcode.proto";
 option java_outer_classname = "PostalCodeProto";
+option java_multiple_files = true;
 
 service PostalCode {
   rpc OnCreate(CreateRequest) returns (PostalCodeState);

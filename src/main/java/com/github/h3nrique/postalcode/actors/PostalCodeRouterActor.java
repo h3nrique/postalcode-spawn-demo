@@ -26,11 +26,11 @@ public final class PostalCodeRouterActor implements StatelessActor {
     public ActorBehavior configure(BehaviorCtx context) {
         return new NamedActorBehavior(
                 name("PostalCodeRouter"),
-                action("Create", ActionBindings.of(CreateRequestProto.CreateRequest.class, this::create))
+                action("Create", ActionBindings.of(CreateRequest.class, this::create))
         );
     }
 
-    public Value create(ActorContext<?> context, CreateRequestProto.CreateRequest msg) {
+    public Value create(ActorContext<?> context, CreateRequest msg) {
         log.debug("Received invocation. Message: '{}'. Context: '{}'.", msg, context);
         try {
             Spawn spawn = context.getSpawnSystem();

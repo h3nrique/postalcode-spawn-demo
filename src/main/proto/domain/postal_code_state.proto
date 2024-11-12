@@ -7,6 +7,7 @@ import "google/type/postal_address.proto";
 
 option java_package = "com.github.h3nrique.postalcode.proto";
 option java_outer_classname = "PostalCodeStateProto";
+option java_multiple_files = true;
 
 message PostalCodeState {
   PostalCodeStatus status = 1;

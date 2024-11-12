@@ -18,7 +18,7 @@ import java.util.Optional;
 
 import static io.eigr.spawn.api.actors.behaviors.ActorBehavior.*;
 
-public final class PostalCodeActor implements StatefulActor<PostalCodeStateProto.PostalCodeState> {
+public final class PostalCodeActor implements StatefulActor<PostalCodeState> {
 
     private static final Logger log = LoggerFactory.getLogger(PostalCodeActor.class);
 
@@ -29,14 +29,14 @@ public final class PostalCodeActor implements StatefulActor<PostalCodeStateProto
         this.postalCodeService = context.getInjector().getInstance(PostalCodeService.class);
         return new NamedActorBehavior(
                 name("PostalCode"),
-                action("OnCreate", ActionBindings.of(CreateRequestProto.CreateRequest.class, this::onCreate))
+                action("OnCreate", ActionBindings.of(CreateRequest.class, this::onCreate))
         );
     }
 
-    public Value onCreate(ActorContext<PostalCodeStateProto.PostalCodeState> context, CreateRequestProto.CreateRequest msg) {
+    public Value onCreate(ActorContext<PostalCodeState> context, CreateRequest msg) {
         log.debug("Received invocation. Message: '{}'. Context: '{}'.", msg, context);
 
-        PostalCodeStateProto.PostalCodeState.Builder builder = PostalCodeStateProto.PostalCodeState.newBuilder();
+        PostalCodeState.Builder builder = PostalCodeState.newBuilder();
         return postalCodeService.find(msg.getPostalCode())
                 .map(postalCode -> {
                     if(context.getState().isPresent()) {
@@ -44,14 +44,14 @@ public final class PostalCodeActor implements StatefulActor<PostalCodeStateProto
                     } else {
                         log.trace("State not present.");
                     }
-                    PostalCodeStateProto.PostalCodeState state = builder.setPostalAddress(PostalAddress.newBuilder()
+                    PostalCodeState state = builder.setPostalAddress(PostalAddress.newBuilder()
                                     .addAddressLines(postalCode.get("logradouro"))
                                     .addAddressLines(postalCode.get("complemento"))
                                     .addAddressLines(postalCode.get("bairro"))
                                     .addAddressLines(postalCode.get("localidade"))
                                     .addAddressLines(postalCode.get("uf"))
                                     .build())
-                            .setStatus(PostalCodeStatusProto.PostalCodeStatus.FOUND)
+                            .setStatus(PostalCodeStatus.FOUND)
                             .build();
                     return Value.at()
                             .state(state)
@@ -59,7 +59,7 @@ public final class PostalCodeActor implements StatefulActor<PostalCodeStateProto
                 })
                 .orElse(Value.at()
                         .state(builder
-                                .setStatus(PostalCodeStatusProto.PostalCodeStatus.NOT_FOUND)
+                                .setStatus(PostalCodeStatus.NOT_FOUND)
                                 .build())
                         .noReply());
     }

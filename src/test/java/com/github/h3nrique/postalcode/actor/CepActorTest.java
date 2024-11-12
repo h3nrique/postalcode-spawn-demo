@@ -18,13 +18,13 @@ public class CepActorTest extends AbstractContainerBaseTest {
     @Test
     public void findCep() throws SpawnException {
         String cep = "03568000";
-        CreateRequestProto.CreateRequest createRequest = CreateRequestProto.CreateRequest.newBuilder()
+        CreateRequest createRequest = CreateRequest.newBuilder()
                 .setPostalCode(cep)
                 .build();
         ActorIdentity actorIdentity = ActorIdentity.of(cfg.spawnSystemName(), cep, "PostalCode", true);
         ActorRef actorRef = spawnSystem.createActorRef(actorIdentity);
         actorRef.invoke("OnCreate", createRequest, Protocol.Noop.class);
-        actorRef.invoke("Get", PostalCodeStateProto.PostalCodeState.class)
+        actorRef.invoke("Get", PostalCodeState.class)
                 .ifPresent(resp -> {
                     assertNotNull(resp);
                     log.debug("PostalCode Get :: [{}]", resp);
