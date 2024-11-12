@@ -103,8 +103,6 @@ services:
       SPAWN_PROXY_HOST: "spawn"
       SPAWN_SYSTEM_NAME: "spawn-system"
     depends_on:
-      mariadb:
-        condition: service_healthy
       spawn:
         condition: service_healthy
     ports:
